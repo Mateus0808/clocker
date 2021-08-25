@@ -13,7 +13,9 @@ import {
   FormLabel,
   FormHelperText,
   InputGroup,
-  InputRightElement
+  InputLeftAddon,
+  InputRightElement,
+  CheckIcon
 } from '@chakra-ui/react'
 
 import { Logo } from '../components'
@@ -21,7 +23,8 @@ import firebase from '../config/firebase'
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('E-mail inválido').required('Campo obrigatório'),
-  password: yup.string().required('Campo obrigatório').min(8, 'Requer pelo menos 8 caracteres')
+  password: yup.string().required('Campo obrigatório').min(8, 'Requer pelo menos 8 caracteres'),
+  username: yup.string().required('Campo obrigatório')
 })
 
 function Home() {
@@ -38,7 +41,7 @@ function Home() {
     isSubmitting
   } = useFormik({
     onSubmit: async (values, form) => {
-      const user = await firebase.auth().signInWithEmailAndPassword(values.email, values.password)
+      const user = await firebase.auth().createUserWithEmailAndPassword(values.email, values.password)
       console.log(user)
     },
     validationSchema,
@@ -84,15 +87,24 @@ function Home() {
           { touched.password && <FormHelperText textColor="#e74c3c">{errors.password}</FormHelperText> }
         </FormControl>
         
+        <FormControl id="username" p={4} isRequired>
+          <InputGroup size="lg">
+            <InputLeftAddon children="clocker.work/" />
+            <Input type="username" value={values.username} onChange={handleChange} onBlur={handleBlur}/>       
+          </InputGroup>
+          { touched.username && <FormHelperText textColor="#e74c3c">{errors.username}</FormHelperText> }
+        </FormControl>
+
         <Box p={4}>
           <Button colorScheme="blue" width="100%" onClick={handleSubmit} isLoading={isSubmitting}>Entrar</Button>
         </Box>
       </Box>
 
       <Box display="flex" flexDir="row">
-        <FormLabel>Ainda não possui uma conta?</FormLabel>
-        <Link href="/signup">Cadastre-se</Link>
+        <FormLabel>Já possui uma conta?</FormLabel>
+        <Link href="/">Acesse</Link>
       </Box>
+
     </Container>
   )
 }
