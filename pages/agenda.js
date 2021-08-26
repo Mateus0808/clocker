@@ -1,5 +1,5 @@
 
-function Agenda() {
+function Qgenda() {
   return (
     <div>
       Agenda
@@ -7,4 +7,4 @@ function Agenda() {
   )
 }
 
-export default Agenda
+export default Qgenda
