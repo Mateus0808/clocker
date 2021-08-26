@@ -1,3 +1,4 @@
-import firabaseClient from './client'
+import firabaseClient, { persistenceMode } from './client'
+import firabaseServer from './server'
 
-export { firabaseClient }
+export { firabaseClient, persistenceMode, firabaseServer }
