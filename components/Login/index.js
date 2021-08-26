@@ -1,4 +1,4 @@
-import React, { Children, useState } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
@@ -13,21 +13,18 @@ import {
   FormLabel,
   FormHelperText,
   InputGroup,
-  InputLeftAddon,
-  InputRightElement,
-  CheckIcon
+  InputRightElement
 } from '@chakra-ui/react'
 
-import { Logo } from '../components'
-import firebase from '../config/firebase'
+import { Logo } from '../Logo'
+import firebase, { persistenceMode } from '../../config/firebase'
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('E-mail inválido').required('Campo obrigatório'),
-  password: yup.string().required('Campo obrigatório').min(8, 'Requer pelo menos 8 caracteres'),
-  username: yup.string().required('Campo obrigatório')
+  password: yup.string().required('Campo obrigatório').min(8, 'Requer pelo menos 8 caracteres')
 })
 
-function Home() {
+export const Login = () => {
 
   const [ show, setShow ] = useState(false)
 
@@ -41,8 +38,8 @@ function Home() {
     isSubmitting
   } = useFormik({
     onSubmit: async (values, form) => {
-      const user = await firebase.auth().createUserWithEmailAndPassword(values.email, values.password)
-      console.log(user)
+      firebase.auth().setPersistence(persistenceMode)
+      const user = await firebase.auth().signInWithEmailAndPassword(values.email, values.password)
     },
     validationSchema,
     initialValues: {
@@ -87,26 +84,15 @@ function Home() {
           { touched.password && <FormHelperText textColor="#e74c3c">{errors.password}</FormHelperText> }
         </FormControl>
         
-        <FormControl id="username" p={4} isRequired>
-          <InputGroup size="lg">
-            <InputLeftAddon>clocker.work/</InputLeftAddon>
-            <Input type="username" value={values.username} onChange={handleChange} onBlur={handleBlur}/>       
-          </InputGroup>
-          { touched.username && <FormHelperText textColor="#e74c3c">{errors.username}</FormHelperText> }
-        </FormControl>
-
         <Box p={4}>
           <Button colorScheme="blue" width="100%" onClick={handleSubmit} isLoading={isSubmitting}>Entrar</Button>
         </Box>
       </Box>
 
       <Box display="flex" flexDir="row">
-        <FormLabel>Já possui uma conta?</FormLabel>
-        <Link href="/">Acesse</Link>
+        <FormLabel>Ainda não possui uma conta?</FormLabel>
+        <Link href="/signup">Cadastre-se</Link>
       </Box>
-
     </Container>
   )
 }
-
-export default Home
