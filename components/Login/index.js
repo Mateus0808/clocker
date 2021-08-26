@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react'
 
 import { Logo } from '../Logo'
-import { firabaseClient, persistenceMode } from '../../config/firebase'
+import { firebaseClient, persistenceMode } from '../../config/firebase/client'
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('E-mail inválido').required('Campo obrigatório'),
@@ -38,8 +38,8 @@ export const Login = () => {
     isSubmitting
   } = useFormik({
     onSubmit: async (values, form) => {
-      firabaseClient.auth().setPersistence(persistenceMode)
-      const user = await firabaseClient.auth().signInWithEmailAndPassword(values.email, values.password)
+      firebaseClient.auth().setPersistence(persistenceMode)
+      const user = await firebaseClient.auth().signInWithEmailAndPassword(values.email, values.password)
     },
     validationSchema,
     initialValues: {
