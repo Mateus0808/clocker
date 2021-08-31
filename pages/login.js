@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
+import { useRouter } from 'next/router'
 
 import {
   Container,
@@ -16,17 +17,17 @@ import {
   InputRightElement
 } from '@chakra-ui/react'
 
-import { Logo } from '../Logo'
-import { firebaseClient, persistenceMode } from '../../config/firebase/client'
+import { Logo, useAuth } from '../components'
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('E-mail inválido').required('Campo obrigatório'),
   password: yup.string().required('Campo obrigatório').min(8, 'Requer pelo menos 8 caracteres')
 })
 
-export const Login = () => {
-
+export default function Login() {
   const [ show, setShow ] = useState(false)
+  const [auth, { login }] = useAuth()
+  const router = useRouter()
 
   const { 
     values, 
@@ -37,10 +38,7 @@ export const Login = () => {
     handleSubmit,
     isSubmitting
   } = useFormik({
-    onSubmit: async (values, form) => {
-      firebaseClient.auth().setPersistence(persistenceMode)
-      const user = await firebaseClient.auth().signInWithEmailAndPassword(values.email, values.password)
-    },
+    onSubmit: login,
     validationSchema,
     initialValues: {
       email: '',
@@ -50,6 +48,10 @@ export const Login = () => {
   })
 
   const handleClick = () => setShow(!show)
+
+  useEffect(() => {
+    auth.user && router.push('/agenda')
+  }, [auth.user])
 
   return (
     <Container p={4} centerContent>
@@ -61,7 +63,12 @@ export const Login = () => {
       <Box>
         <FormControl id="email" p={4} isRequired>
             <FormLabel>Email</FormLabel>
-            <Input type="email" value={values.email} onChange={handleChange} onBlur={handleBlur}/>       
+            <Input 
+              type="email" 
+              value={values.email} 
+              onChange={handleChange} 
+              onBlur={handleBlur} 
+            />       
             { touched.email && <FormHelperText textColor="#e74c3c">{errors.email}</FormHelperText> }
         </FormControl>
 
