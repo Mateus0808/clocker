@@ -22,7 +22,7 @@ import { Logo, useAuth } from '../components'
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('E-mail inválido').required('Campo obrigatório'),
-  password: yup.string().required('Campo obrigatório').min(8, 'Requer pelo menos 8 caracteres'),
+  password: yup.string().required('Campo obrigatório').min(6, 'Requer pelo menos 6 caracteres'),
   username: yup.string().required('Campo obrigatório')
 })
 
