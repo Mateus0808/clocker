@@ -16,7 +16,36 @@ for (let blockIndex = 0; blockIndex <= totalHours; blockIndex++) {
   timeBlocks.push(time)
 }
 
-export default async function Schedule (req, res) {
+const getUserId = async (username) => {
+  const profileDoc = await profile
+    .where('username', '==', username)
+    .get()
+
+  const { userId } = profileDoc.docs[0].data()
+  
+  return userId
+}
+
+const setSchedule = async (req, res) => {
+  const userId = await getUserId(req.body.username)
+  
+  const doc = await agenda.doc(`${userId}_${req.body.when}`).get()
+
+  if(doc.exists) {
+    return res.status(400)
+  }
+  console.log(req.body)
+  agenda.doc(`${userId}_${req.body.when}`).set({
+    userId,
+    when: req.body.when,
+    name: req.body.name,
+    phone: req.body.phone,
+  })
+
+  return res.status(200)
+  
+}
+const getSchedule = async (req, res) => {
   try {
     // const profileDoc = await profile
     //   .where('username', '==', req.query.username)
@@ -31,5 +60,29 @@ export default async function Schedule (req, res) {
   } catch(error) {
     console.log('FB ERROR ', error)
   }
-  res.status(200).json({ name: 'John Boe'})
 }
+
+const methods = {
+  'POST': setSchedule,
+  'GET': getSchedule
+}
+
+export default async (req, res) => methods[req.method] 
+  ? methods[req.method](req, res)
+  : res.status(405)
+  // try {
+    // const profileDoc = await profile
+    //   .where('username', '==', req.query.username)
+    //   .get()
+    
+    // const snapshot = await agenda
+    //   .where('userId', '==', profileDoc.userId)
+    //   .where('when', '==', req.query.when)
+    //   .get()
+    
+  //   return res.status(200).json(timeBlocks)
+  // } catch(error) {
+  //   console.log('FB ERROR ', error)
+  // }
+  // res.status(200).json({ name: 'John Boe'})
+// }
