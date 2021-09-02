@@ -5,6 +5,7 @@ const agenda = db.collection('agenda')
 
 export default async function Agenda (req, res) {
   const [, token] = req.headers.authorization.split(' ')
+  
   if(!token) {
     return res.status(401)
   }
