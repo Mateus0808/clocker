@@ -5,8 +5,9 @@ import axios from 'axios'
 
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons'
 import { Box, Button, Container, IconButton, Spinner, SimpleGrid } from "@chakra-ui/react"
-import { Logo, useAuth, formatDate } from "../components"
 import { addDays, subDays } from "date-fns"
+
+import { Logo, useAuth, formatDate, TimeBlock } from "../components"
 
 const getSchedule = async (when) => axios({
   method: 'get',
@@ -21,13 +22,6 @@ const Header = ({ children }) => (
   </Box>
 )
 
-const TimeBlock = ({ time }) => {
-  return (
-    <Button p={8} bg="blue.500" color="white">
-      {time}
-    </Button>
-  )
-}
 
 export default function Schedule() {
   const router = useRouter()
@@ -37,6 +31,7 @@ export default function Schedule() {
   
   const addDay = () => setWhen(prevState => addDays(prevState, 1))
   const removeDay = () => setWhen(prevState => subDays(prevState, 1))
+ 
 
   useEffect(() => {
     fetch(when)    
