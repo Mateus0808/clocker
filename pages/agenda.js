@@ -4,9 +4,9 @@ import { useFetch } from '@refetty/react'
 import axios from 'axios'
 
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons'
-import { Box, Button, Container, IconButton } from "@chakra-ui/react"
+import { Box, Button, Container, IconButton, Spinner, Text } from "@chakra-ui/react"
 import { Logo, useAuth, formatDate } from "../components"
-import { addDays, subDays } from "date-fns"
+import { addDays, subDays, format } from "date-fns"
 import { getToken } from "../config/firebase/client"
 
 const getAgenda = async (when) => {
@@ -15,7 +15,7 @@ const getAgenda = async (when) => {
   return axios({
     method: 'get',
     url: 'api/agenda',
-    params: { when },
+    params: { date: format(when, 'yyyy-MM-dd') },
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -29,12 +29,22 @@ const Header = ({ children }) => (
   </Box>
 )
 
+const AgendaBlock = ({ time, name, phone, ...props }) => (
+  <Box {...props} display="flex" bg="gray.100" borderRadius={8} p={4} alignItems="center">
+    <Box flex={1}>{time}</Box>
+    <Box textAlign="right">
+      <Text fontSize="2xl">{name}</Text>
+      <Text >{phone}</Text>
+    </Box>
+  </Box>
+)
+
 export default function Agenda() {
   const router = useRouter()
   const [auth, { logout }] = useAuth()
   const [when, setWhen] = useState(() => new Date())
   const [data, { loading, status, error }, fetch] = useFetch(getAgenda, { lazy: true })
-  
+
   const addDay = () => setWhen(prevState => addDays(prevState, 1))
   const removeDay = () => setWhen(prevState => subDays(prevState, 1))
   
@@ -59,6 +69,12 @@ export default function Agenda() {
         <Box flex={1} textAlign="center">{formatDate(when, 'PPPP')}</Box>
         <IconButton icon={<ChevronRightIcon />} bg="transparent" onClick={addDay}/>
       </Box>
+
+      {loading && <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl"/>}
+    
+      {data?.map(doc => (
+        <AgendaBlock key={doc.time} time={doc.time} name={doc.name} phone={doc.phone} mt={4} />
+      ))}
     </Container>
   )
   
