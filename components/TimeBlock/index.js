@@ -96,6 +96,7 @@ export const TimeBlock = ({ time, date, disabled }) => {
           <Input 
             label="Telefone: "
             name="phone"
+            mask={['(99) 9999-9999', '(99) 9 9999-9999']}
             touched={touched.phone}
             error={errors.phone}
             value={values.phone}
