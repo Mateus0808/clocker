@@ -9,11 +9,11 @@ import { addDays, format, subDays } from "date-fns"
 
 import { Logo, useAuth, formatDate, TimeBlock } from "../components"
 
-const getSchedule = async (when) => axios({
+const getSchedule = async ({ when, username }) => axios({
   method: 'get',
   url: 'api/schedule',
   params: { 
-    username: window.location.pathname.replace('/', ''),
+    username,
     date: format(when, 'yyyy-MM-dd')
   },
 })
@@ -32,14 +32,19 @@ export default function Schedule() {
   const [when, setWhen] = useState(() => new Date())
   const [data, { loading, status, error }, fetch] = useFetch(getSchedule, { lazy: true })
   
+
   const addDay = () => setWhen(prevState => addDays(prevState, 1))
   const removeDay = () => setWhen(prevState => subDays(prevState, 1))
  
 
   useEffect(() => {
-    fetch(when)    
-  }, [when])
+    fetch({ when, username: router.query.username })    
+  }, [when, router.query.username])
   
+  if(error) {
+    
+  }
+
   return (
     <Container>
       <Header>
