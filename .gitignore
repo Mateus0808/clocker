@@ -35,3 +35,5 @@ yarn-error.log*
 
 
 serviceAccountKey.json
+serviceAccount2.json
+formatted-key.json

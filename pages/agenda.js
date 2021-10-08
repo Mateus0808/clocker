@@ -39,6 +39,12 @@ const AgendaBlock = ({ time, name, phone, ...props }) => (
     </Box>
 )
 
+const SemAgenda = () => (
+    <Box display="flex" justifyContent='center' bg="gray.100" mt={4} borderRadius={8} p={4} alignItems="center">
+        <Text>Nada agendado para este dia</Text>
+    </Box>
+)
+
 export default function Agenda() {
     const router = useRouter()
     const [auth, { logout }] = useAuth()
@@ -71,9 +77,9 @@ export default function Agenda() {
 
             {loading && <Spinner tickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />}
 
-            {data?.map(doc => (
+            {data && data.length ? data?.map(doc => (
                 <AgendaBlock key={doc.time} time={doc.time} name={doc.name} phone={doc.phone} mt={4} />
-            ))}
+            )) : <SemAgenda />}
         </Container>
     )
 }

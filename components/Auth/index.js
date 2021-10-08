@@ -17,7 +17,6 @@ export const login = async ({ email, password }) => {
 
 export const signup = async ({ email, password, username}) => {
   try {
-    console.log('signup', email, password, username)
     await firebaseClient.auth().createUserWithEmailAndPassword(email, password)
     const user = await login({ email, password })
 
@@ -31,8 +30,7 @@ export const signup = async ({ email, password, username}) => {
         Authorization: `Bearer ${token}`
       }
     })
-    console.log('signup', data)
-    console.log('signup', token)
+
   } catch (error) {
     console.log('SIGNUP ERROR', error)
   }
