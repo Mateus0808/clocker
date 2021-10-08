@@ -17,6 +17,7 @@ for (let blockIndex = 0; blockIndex <= totalHours; blockIndex++) {
 }
 
 const getUserId = async (username) => {
+
   const profileDoc = await profile
     .where('username', '==', username)
     .get()
@@ -26,7 +27,7 @@ const getUserId = async (username) => {
   }
 
   const { userId } = profileDoc.docs[0].data()
-  
+  console.log('userId', userId)
   return userId
 }
 
@@ -36,6 +37,7 @@ const setSchedule = async (req, res) => {
   const doc = await agenda.doc(docId).get()
 
   if(doc.exists) {
+    console.log('doc exists')
     return res.status(400).json({ message: "Time blocked" })
   }
   
@@ -52,8 +54,9 @@ const setSchedule = async (req, res) => {
 }
 const getSchedule = async (req, res) => {
   try {
+    console.log('userId', req.query.username)
     const userId = await getUserId(req.query.username)
-    
+    console.log('req.query.username', req.query.username)
     if(!userId) {
       return res.status(404).json({ message: "Invalid username" })
     }

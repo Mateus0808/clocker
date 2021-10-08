@@ -6,7 +6,7 @@ const profile = db.collection('profiles')
 export default async (req, res) => {
   const [, token] = req.headers.authorization.split(' ')
   const { user_id } = await firebaseServer.auth().verifyIdToken(token)
-  
+  console.log('profile', user_id, req.body.username)
   profile.doc(req.body.username).set({
     userId: user_id,
     username: req.body.username
