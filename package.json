@@ -9,9 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^1.0.15",
     "@chakra-ui/react": "^1.6.6",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@refetty/react": "1.0.0-rc.11",
+    "axios": "^0.21.1",
+    "date-fns": "^2.23.0",
     "firebase": "^8.10.0",
     "firebase-admin": "^9.11.1",
     "formik": "^2.2.9",
@@ -19,6 +23,7 @@
     "next": "11.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "remask": "^0.1.0-alpha.5",
     "yup": "^0.32.9"
   },
   "devDependencies": {

@@ -1,4 +1,5 @@
-import React, { Children, useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
@@ -15,20 +16,19 @@ import {
   InputGroup,
   InputLeftAddon,
   InputRightElement,
-  CheckIcon
 } from '@chakra-ui/react'
 
-import { Logo } from '../components'
-import { firebaseClient } from '../config/firebase/client'
+import { Logo, useAuth } from '../components'
 
 const validationSchema = yup.object().shape({
   email: yup.string().email('E-mail inválido').required('Campo obrigatório'),
-  password: yup.string().required('Campo obrigatório').min(8, 'Requer pelo menos 8 caracteres'),
+  password: yup.string().required('Campo obrigatório').min(6, 'Requer pelo menos 6 caracteres'),
   username: yup.string().required('Campo obrigatório')
 })
 
 function Home() {
-
+  const [auth, { signup }] = useAuth()
+  const router = useRouter()
   const [ show, setShow ] = useState(false)
 
   const { 
@@ -40,10 +40,7 @@ function Home() {
     handleSubmit,
     isSubmitting
   } = useFormik({
-    onSubmit: async (values, form) => {
-      const user = await firebaseClient.auth().createUserWithEmailAndPassword(values.email, values.password)
-      console.log(user)
-    },
+    onSubmit: signup,
     validationSchema,
     initialValues: {
       email: '',
@@ -54,9 +51,13 @@ function Home() {
 
   const handleClick = () => setShow(!show)
 
+  useEffect(() => {
+    auth.user && router.push('/agenda')
+  }, [auth.user])
+
   return (
     <Container p={4} centerContent>
-      <Logo />
+      <Logo size={320} />
       <Box p={4} mt={8}>
         <Text>Crie sua agenda compartilhada</Text>
       </Box>
