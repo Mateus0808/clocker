@@ -14,7 +14,7 @@ export default function Home() {
         ? router.push('/agenda')
         : router.push('/login')
     }
-  }, [auth.user])
+  }, [auth.user, auth.loading, router])
 
   return (
     <Container p={4} centerContent>
